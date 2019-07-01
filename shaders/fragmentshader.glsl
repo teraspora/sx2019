@@ -36,6 +36,6 @@ void main() {
     // Normalized pixel coordinates (y from -1 to 1)
     vec2 uv = (2. * gl_FragCoord.xy - u_resolution.xy) / (u_resolution.y * scale);
     col = vec3(nsin(u_time), 0.0, 1.0);
-    col *= step(length(uv), 0.6 + sin(u_time / 2.0) / 8.0 + abs(arg(uv) / 12.57));
+    col *= step(length(uv), 0.6 + sin(u_time / 2.0 - abs(arg(uv * 6.0))) / 8.0);
     gl_FragColor = vec4(col, 1.0);
 }
