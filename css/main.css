@@ -376,33 +376,53 @@ html {
 
 body {
     display: grid;
-    justify-content: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: 3fr 1fr;
+    font-family: sans-serif;
+    background: #000000;
+    justify-items: center;
+    align-content: center;
     padding-top: 2vh;
 }
 
 #canv0 {
     background-color: #000000;
-    border: 2px solid #00aaff;
+    border: 2px solid #ffffff;
+    grid-row: 1/2;
+    grid-column: 1/-1; 
 }
 
 #controls {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     margin-top: 1vh;
-    border: 2px solid #00aaff;
-    border-radius: 5px;
-    padding: 1vw;
+    padding: 0vw;
     background-color: #000000;
-}
-
-.sh-btn, input {
     border-radius: 5px;
-    background-color: #0049c4;
-    color: #ffae18;
-    margin: 1vw;
-
+    justify-self: center;
 }
 
-.sh-btn {
+#controls p, input{
+  color: #0094ff;
+} 
+
+.sh-btn{
+    border-radius: 5px;
+    border: 2px ridge #0094ff;
+    background-color: #000000;
+    color: #ffae18;
+    margin: 1.5vw;
     font-size: 1.4vw;
+    width: 10vw;
+    justify-self: center;
+}
+
+.sh-info{
+    background-color: #000000;
+    color: #0094ff;
+    margin: 1vw;
+    font-size: 1.4vw;
+    /*width: 10vw;*/
+    justify-self: center;
 }
