@@ -388,6 +388,7 @@ body {
 #canv0 {
     background-color: #000000;
     border: 2px solid #ffffff;
+    border-radius: 5px;
     grid-row: 1/2;
     grid-column: 1/-1; 
 }
@@ -404,7 +405,7 @@ body {
 }
 
 #controls p, input{
-  color: #0094ff;
+    color: #0094ff;
 } 
 
 .sh-btn{
