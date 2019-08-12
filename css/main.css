@@ -376,8 +376,9 @@ html {
 
 body {
     display: grid;
+    height: 100vh;
     grid-template-columns: 1fr;
-    grid-template-rows: 3fr 1fr;
+    grid-template-rows: 8fr 1fr;
     font-family: sans-serif;
     background: #000000;
     justify-items: center;
@@ -395,8 +396,8 @@ body {
 
 #controls {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(1, 1fr);
     margin-top: 1vh;
     padding: 0vw;
     background-color: #000000;
@@ -408,22 +409,33 @@ body {
     color: #0094ff;
 } 
 
-.sh-btn{
+.sh-btn {
     border-radius: 5px;
     border: 2px ridge #0094ff;
     background-color: #000000;
     color: #ffae18;
-    margin: 1.5vw;
-    font-size: 1.4vw;
-    width: 10vw;
+    margin: 1vw;
+    font-size: 1vw;
+    width: 8vw;
     justify-self: center;
 }
 
 .sh-info{
+    border-radius: 5px;
+    border: 2px ridge #0094ff;
     background-color: #000000;
     color: #0094ff;
     margin: 1vw;
-    font-size: 1.4vw;
-    /*width: 10vw;*/
+    font-size: 1vw;
+    width: 8vw;
     justify-self: center;
 }
+
+label {
+  color: var(--bright-text-col);
+}
+
+[id$="input-wrapper"] {
+  
+}
+
