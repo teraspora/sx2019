@@ -6,11 +6,11 @@ document.onreadystatechange = () => {
        
         // Get reference to canvas, set dimensions
         const canvas = document.getElementById(`canv0`);
-        let canvasSize = Math.min(window.innerHeight, window.innerWidth) - 200;
-        let [w, h] = [canvasSize, canvasSize];
+        let canvasSize = [window.innerWidth - 200, window.innerHeight - 200];
+        let [w, h] = canvasSize;
         [canvas.width, canvas.height] = [w, h];
         let [mx, my] = [0.0, 0.0];  // Mouse position in canvas, normalised to range(-1, 1)
-
+        let colourshift = 0;
         // Link canvas to a WebGL context
         const gl = canvas.getContext(`webgl`) || canvas.getContext(`experimental-webgl`);
 
@@ -43,7 +43,7 @@ document.onreadystatechange = () => {
         let time_location;  // time_location will refer to where the GPU stores u_time
         let resolution_location;    // resolution_location will refer to where GPU stores u_resolution
         let mouse_location; // mouse_location will refer to where GPU stores u_mouse
-        
+        let colshift_location; // colshift_location will refer to uniform int (0, 1 or 2) determining the colour shift
         // State booleans: Vertex shader loaded? / Fragment6 shader loaded? / User clicked "Pause"? 
         //                 Eucllidean or Manhattan distance metric? / Clock started?
         let [vs_loaded, fs_loaded, paused, euclidean, started] = [false, false, false, false, false];
@@ -71,7 +71,11 @@ document.onreadystatechange = () => {
             euclidean = !euclidean;
             this.textContent = euclidean ? "Manhattan" : "Euclidean";
             fShaderCode = euclidean ? fShaderCode.replace(`minkd(uv, p, 1.)`, `minkd(uv, p, 2.)`)
-                                    : fShaderCode.replace(`minkd(uv, p, 2.)`, `minkd(uv, p, 1.)`);
+                                                 .replace(`minkl(st, 1.)`, `minkl(st, 2.)`)
+                                                 .replace(`float order = 1.;`, `float order = 2.;`)
+                                    : fShaderCode.replace(`minkd(uv, p, 2.)`, `minkd(uv, p, 1.)`)
+                                                 .replace(`minkl(st, 2.)`, `minkl(st, 1.)`)
+                                                 .replace(`float order = 2.;`, `float order = 1.;`);
             gl.shaderSource(fragmentShader, fShaderCode);
             gl.compileShader(fragmentShader);
             console.log(`Re-linking shaders...`)  
@@ -82,7 +86,7 @@ document.onreadystatechange = () => {
         document.getElementById("sh-btn-reset").addEventListener('click', reset);
 
         canvas.onmousemove = handleMouseMove;
-
+        document.addEventListener('keyup', processKeys);
         // Read & compile user-selected shader; if no compile errors, set state flag to show it's been loaded;
         // If the other shader's `loaded` flag is also set, then spring into action by initiating linking
         // which leads on to the shaders actually being run.
@@ -155,7 +159,8 @@ document.onreadystatechange = () => {
 
             time_location = gl.getUniformLocation(program, `u_time`);
             resolution_location = gl.getUniformLocation(program, `u_resolution`);
-            mouse_location = gl.getUniformLocation(program, `u_mouse`); 
+            mouse_location = gl.getUniformLocation(program, `u_mouse`);
+            colshift_location = gl.getUniformLocation(program, `u_colshift`);
             if (!started) {
                 t0 = Date.now();
             }
@@ -189,6 +194,7 @@ document.onreadystatechange = () => {
                 gl.uniform1f(time_location, u_time);
                 gl.uniform2f (resolution_location, w, h);
                 gl.uniform2f(mouse_location, mx, my);              
+                gl.uniform1i(colshift_location, colourshift);              
                 gl.drawArrays(
                     gl.TRIANGLES,   // WebGL drawing mode
                     0,              // How many vertices to skip
@@ -202,6 +208,23 @@ document.onreadystatechange = () => {
             let bounds = canvas.getBoundingClientRect();
             [mx, my] = [2.0 * (ev.clientX - bounds.left) / bounds.width - 1.0,
                         2.0 * (ev.clientY - bounds.top) / bounds.height - 1.0];            
+        }
+
+        // KEYBOARD HANDLING
+
+        function processKeys(e) {       // trap keyboard input; takes an event
+            var key = e.key || e.keyCode;   // keyCode is an older standard
+            switch (key) {
+                case "r":
+                    colourshift = 0;
+                    break;
+                case "g":
+                    colourshift = 1;
+                    break;
+                case "b":
+                    colourshift = 2;
+                    break;        
+            }
         }
 
         function reset() {
